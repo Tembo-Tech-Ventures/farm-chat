@@ -4,5 +4,3 @@ services:
     build: ./api
     ports:
       - "5000:5000"
-    environment:
-      - DATA_ZIP_PATH=/app/data/34053d6d-580c-400f-9b40-ef9184f30567
