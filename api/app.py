@@ -19,6 +19,10 @@ def get_csv_files():
 def get_file_id(filename):
     return str(uuid.uuid5(NAMESPACE, filename))
 
+@app.route('/', methods=['GET'])
+def health_check():
+    return jsonify({'status': 'healthy'})
+
 @app.route('/files', methods=['GET'])
 def list_files():
     files = get_csv_files()
