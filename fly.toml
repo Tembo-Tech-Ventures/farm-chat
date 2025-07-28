@@ -5,6 +5,7 @@
 app = "farm-chat-api"
 
 [build]
+  dockerfile = "./api/Dockerfile"
   context = "./api"
 
 [env]
