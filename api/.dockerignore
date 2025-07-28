@@ -18,8 +18,8 @@
 **/docker-compose.yml
 **/node_modules
 **/Thumbs.db
-Dockerfile
-*.Dockerfile
+<!-- Dockerfile
+*.Dockerfile -->
 # Ignore our own binary, but only in the root to avoid ignoring subfolders
 defang
 defang.exe
