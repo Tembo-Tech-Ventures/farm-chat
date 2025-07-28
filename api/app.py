@@ -8,11 +8,15 @@ import download_data
 DATA_ZIP_PATH = os.path.join(os.path.dirname(__file__), 'data', '34053d6d-580c-400f-9b40-ef9184f30567')
 NAMESPACE = uuid.UUID('6ba7b810-9dad-11d1-80b4-00c04fd430c8')  # UUID namespace for v5
 
-download_data.download_data()  # Ensure data is downloaded before app starts
-
 app = Flask(__name__)
 
+def ensure_data_downloaded():
+    """Ensure data is downloaded before accessing it."""
+    if not os.path.exists(DATA_ZIP_PATH):
+        download_data.download_data()
+
 def get_csv_files():
+    ensure_data_downloaded()
     with zipfile.ZipFile(DATA_ZIP_PATH, 'r') as zip_ref:
         return [f for f in zip_ref.namelist() if f.endswith('.csv')]
 
@@ -25,6 +29,7 @@ def health_check():
 
 @app.route('/files', methods=['GET'])
 def list_files():
+    ensure_data_downloaded()
     files = get_csv_files()
     result = [
         {'name': f, 'id': get_file_id(f)}
@@ -34,6 +39,7 @@ def list_files():
 
 @app.route('/files/<file_id>/metadata', methods=['GET'])
 def file_metadata(file_id):
+    ensure_data_downloaded()
     files = get_csv_files()
     file_map = {get_file_id(f): f for f in files}
     if file_id not in file_map:
@@ -55,7 +61,3 @@ def file_metadata(file_id):
         'sample_rows': df.sample(min(5, len(df)), random_state=42).to_dict(orient='records')
     }
     return jsonify(metadata)
-
-if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port)
